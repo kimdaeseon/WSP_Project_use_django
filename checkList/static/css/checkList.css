@@ -1,0 +1,14 @@
+.title{
+    text-align: center;
+    margin-top: 50px;
+}
+
+.checkList{
+    width: 500px;
+    margin: 0 auto;
+    margin-top: 50px;
+}
+
+th, tr{
+    text-align: center;
+}
