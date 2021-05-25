@@ -37,7 +37,6 @@ const login = {
         })
     },
     login : function(){
-        alert("asdasd")
         const data = {
             userId : $('#userId').val(),
             userPassword : $('#userPassword').val()
@@ -49,8 +48,7 @@ const login = {
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(data)
         }).done(function(arg){
-            alert('로그인 되었습니다.')
-            alert(arg)
+            alert(arg.message)
             window.location.href = '/index'
         }).fail(function (error) {
             alert(JSON.stringify(error))
