@@ -1,5 +1,5 @@
 
-chartData = {
+const chartData = {
     type: 'bar', 
     data: { 
         labels: ['mon', 'tue', 'wen', 'thr', 'fri', 'sat', 'sun'], 
@@ -14,19 +14,30 @@ chartData = {
         borderColor:  'rgba(54, 162, 235, 1)', 
         borderWidth: 1  
     }]}, 
-    options: {
-        lengend:{
-            display:true
-        }
-    } 
+    options: {} 
 }
-const barChart = function(){
-    var ctx = document.getElementById('myChart')
+const ctx = document.getElementById('myChart')
+
+const makeGraph = function(ctx, chartData){
+    const myChart = new Chart(ctx, chartData)
+    return myChart
+}
+const barChart = function(myChart, chartData, ctx){
+    myChart.destroy()
     chartData.type = 'bar'
-    myChart = new Chart(ctx, chartData)
+    newChart = new Chart(ctx, chartData)
+    return newChart
 }
-const lineChart = function(){
-    var ctx = document.getElementById('myChart')
+const lineChart = function(myChart, chartData, ctx){
+    myChart.destroy()
     chartData.type = 'line'
-    mychar = new Chart(ctx, chartData)
+    newChart = new Chart(ctx, chartData)
+    return newChart
 }
+let myChart = makeGraph(ctx, chartData)
+$('#lineG').on('click', function(){
+    myChart = lineChart(myChart, chartData, ctx)
+})
+$('#barG').on('click', function(){
+    myChart = barChart(myChart, chartData, ctx)
+})

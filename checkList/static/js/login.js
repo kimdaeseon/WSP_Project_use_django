@@ -48,8 +48,14 @@ const login = {
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(data)
         }).done(function(arg){
-            alert(arg.message)
-            window.location.href = '/index'
+            if(arg.loginstatus == true){
+                alert("로그인에 성공하였습니다.")
+                window.location.href = '/index'
+            }
+            else if (arg.loginstatus == false){
+                alert("로그인에 실패하였습니다.")
+                window.location.href = '/'
+            }           
         }).fail(function (error) {
             alert(JSON.stringify(error))
         })
