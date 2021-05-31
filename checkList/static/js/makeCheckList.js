@@ -29,37 +29,33 @@ $.ajaxSetup({
 });
 
 
-const login = {
-    init : function(){
-        const _this = this;
-        $('#login').on('click', function(){
-            _this.login()
-        })
-    },
-    login : function(){
-        const data = {
-            userId : $('#userId').val(),
-            userPassword : $('#userPassword').val()
-        }
-        $.ajax({
+const addItem = function(){
+    let string = document.getElementById('itemList').innerHTML
+    const numberOfItem = document.getElementById('numberOfItem').innerHTML
+    document.getElementById('itemList').innerHTML = string + `<br>항목 ${parseInt(numberOfItem)+1} : <input type="text" name="checkList${numberOfItem}" id="checkList${numberOfItem}"><br>`
+    document.getElementById('numberOfItem').innerHTML = parseInt(numberOfItem) + 1
+}
+
+const submit = function(){
+    numberOfItem = parseInt(document.getElementById('numberOfItem').innerHTML)
+    const temp = []
+    for(let i = 0; i < numberOfItem; i++){
+        temp.push($(`#checkList${i}`).val())
+    }
+    data = {
+        title : $('#checkListName').val(),
+        data : temp
+    }
+    $.ajax({
             type: 'POST',
-            url: '/api/v1/login',
+            url: '/api/v1/makeCheckList',
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(data)
         }).done(function(arg){
-            if(arg.loginstatus == 'true'){
-                alert("로그인에 성공하였습니다.")
-                window.location.href = '/index'
-            }
-            else if (arg.loginstatus == 'false'){
-                alert("로그인에 실패하였습니다.")
-                window.location.href = '/'
-            }           
+            if(arg.status == 'success') window.location.href = '/index'
+            else alert("아마도 실패?")
         }).fail(function (error) {
             alert(JSON.stringify(error))
         })
-    }
 }
-
-login.init()

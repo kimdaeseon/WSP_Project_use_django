@@ -12,6 +12,7 @@ class CheckList(models.Model):
 
 class CheckListItems(models.Model):
     checkListName = models.CharField(max_length=100)
+    userName = models.CharField(max_length=100)
     itemName = models.CharField(max_length=100)
 
 class CheckListData(models.Model):

@@ -1,0 +1,26 @@
+{% load static %}
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <link href="//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="{% static 'css/makeCheckList.css' %}">
+        <script src="{% static 'js/makeCheckList.js' %}"></script>
+    </head>
+    <body>
+        <div class=make-box>
+            항목 개수 : <div id ="numberOfItem" style="display:inline-block;">0</div><br><br>
+            체크리스트 이름 : <input type="text" name="checkListName" id="checkListName">
+            <div id="itemList">
+            {% csrf_token %}
+            </div>
+                <br><br>
+                <div class="btn btn-primary" id="makeList" onclick="submit()">체크리스트 생성</div>
+                <div class="btn btn-primary" id="addItem" onclick="addItem()">목록 추가</div>
+            
+        </div>
+
+
+    </body>
+</html>

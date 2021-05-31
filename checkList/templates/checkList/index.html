@@ -20,16 +20,13 @@
                 <th>체크리스트 목록</th>
             </thead>
             <tbody>
+                {% for checkList in checkLists%}
                 <tr>
-                    <td><a href="">예시1</a></td>
+                    <td><a href="">{{checkList.checkListName}}</a></td>
                 </tr>
-                <tr>
-                    <td><a href="">예시1</a></td>
-                </tr>
-                <tr>
-                    <td><a href="">예시1</a></td>
-                </tr>
+                {% endfor %}
             </tbody>
+            <a href="/makeCheckList"> 체크리스트 만들기 </a>
         </table>
     </body>
 </html>

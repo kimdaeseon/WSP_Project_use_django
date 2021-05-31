@@ -10,8 +10,24 @@ def login(request):
 def graph(request):
     return render(request, 'checkList/graph.html', {})
 def index(request):
-    return render(request, 'checkList/index.html', {})
+    checkList = CheckList.objects.filter(userName = request.session['userName'])
+    return render(request, 'checkList/index.html', {'checkLists' : checkList})
+def make_check_list_page(request):
+    return render(request, 'checkList/makeCheckList.html', {})
 
+def make_check_list(request):
+    data = json.loads(request.body)
+    items = data['data']
+    print(data['title'], data['data'])
+
+    CheckList.objects.create(userName = request.session['userName'], checkListName = data['title'])
+
+    for i in items:
+        CheckListItems.objects.create(userName = request.session['userName'], checkListName = data['title'], itemName = i)
+
+    return JsonResponse({
+        'status' : 'success'
+    }, json_dumps_params= {'ensure_ascii' : True})
 
 def check_login(request):
     data = json.loads(request.body)
