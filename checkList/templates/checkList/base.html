@@ -1,0 +1,26 @@
+{% load static %}
+<html>
+    <head>
+        <title>web Service programming blog</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <link href="//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        {%block static%}
+        {%endblock%}
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+    </head>
+    <body>
+        <div style="text-align: center">
+            <a href="/index" class="btn"><h1 class="title">매일매일 체크리스트</h1></a>
+        </div>
+
+        <ul class="nav nav-tabs" role="tablist">
+            {%block presentation%}
+            {% endblock %}
+        </ul>
+        {%block content%}
+        {%endblock%}
+    </body>
+</html>

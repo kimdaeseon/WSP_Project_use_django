@@ -1,0 +1,33 @@
+{% extends 'checkList/base.html' %}
+{% load static %}
+
+{%block static%}
+    <link rel="stylesheet" href="{% static 'css/checkList.css' %}">
+    <link rel="stylesheet" href="{% static 'css/makeCheckList.css' %}?ver=1">
+    <script src="{% static 'js/checkList.js' %}"></script>
+{% endblock %}
+
+{%block presentation%}
+    <li role="presentation"  class ="active"> <a href="/index"> 체크리스트 </a> </li>
+    <li role="presentation"> <a href="/graph"> 통계 </a> </li>
+{%endblock%}
+
+{%block content%}
+    <div class="make-box">
+        <h2 id="checkListName">{{checkListName}}</h2><br><br><br>
+        <ul>
+            <form action="">
+            {% csrf_token %}
+            {% for checkListItem in checkListItems%}
+                {% if checkListItem.isChecked %}
+                {{checkListItem.itemName}}<br>
+                {% else %}
+                <input class="form-check-input checkList-item" type="checkbox" name="{{checkListItem.itemName}}"> {{checkListItem.itemName}}</input><br>
+                {% endif %}
+            {% endfor %}
+                <br>
+                <div class="btn btn-default" onclick="submit()"> 제출 </div>
+            </form>
+        </ul>
+    </div>
+{% endblock %}
