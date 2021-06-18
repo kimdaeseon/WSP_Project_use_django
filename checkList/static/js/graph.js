@@ -23,30 +23,8 @@ const lineChart = function(myChart, chartData, ctx){
 const chartData = {
     type: 'bar', 
     data: { 
-        labels: ['mon', 'tue', 'wen', 'thr', 'fri', 'sat', 'sun'], 
-        datasets: [
-            { 
-                label: '# of Votes', 
-                data: [10, 19, 3, 5, 2, 3, 5],
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)', 
-                borderWidth: 1 
-            },
-            {
-                label: '# of Votes', 
-                data: [12, 22, 8, 1, 11, 2, 10],
-                backgroundColor:   'rgba(255, 255, 255, 0.2)',
-                borderColor:  'rgba(54, 162, 235, 1)', 
-                borderWidth: 1  
-            },
-            {
-                label: '# of Votes', 
-                data: [7, 20, 5, 4, 18, 1, 1],
-                backgroundColor:   'rgba(255, 255, 255, 0.2)',
-                borderColor:  'rgba(90, 255, 50, 1)', 
-                borderWidth: 1  
-            }
-        ]
+        labels: [], 
+        datasets: []
     }, 
     options: {
         tooltips: {
@@ -217,14 +195,14 @@ $('#barG').on('click', function(){
     myChart = barChart(myChart, chartData, ctx)
 })
 
-const checkList = document.getElementsByClassName('checkList-item')
+const firstCheckList = document.getElementsByClassName('checkList-item')
 const ctx = document.getElementById('myChart')
 let myChart
-if(checkList.length != 0){
+if(firstCheckList.length != 0){
     const firstData = {
         checkListName : []
     }
-    firstData.checkListName.push(checkList[0].name)
+    firstData.checkListName.push(firstCheckList[0].name)
     myChart = makeGraph(ctx, chartData)
     $.ajax({
         type: 'POST',
