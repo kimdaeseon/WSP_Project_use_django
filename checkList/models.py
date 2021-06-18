@@ -19,7 +19,7 @@ class CheckListData(models.Model):
     userName = models.CharField(max_length=100)
     checkListName = models.CharField(max_length=100)
     itemName = models.CharField(max_length=100)
-    dateData = models.DateTimeField(default=timezone.now)
+    dateData = models.DateTimeField(default=timezone.datetime.now())
 # Create your models here.
 
 

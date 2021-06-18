@@ -12,4 +12,6 @@ urlpatterns = [
     path('checkList/<str:checkListName>', views.check_list, name='check_list'),
     path('api/v1/saveCheckList', views.save_check_list, name='save_check_list'),
     path('api/v1/deleteCheckList', views.delete_check_list, name='delete_check_list'),
+    path('api/v1/graph', views.graph_data, name='graph_data'),
+    path('test', views.test, name='test'),
 ]
