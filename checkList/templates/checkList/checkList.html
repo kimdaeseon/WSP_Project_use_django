@@ -4,7 +4,7 @@
 {%block static%}
     <link rel="stylesheet" href="{% static 'css/checkList.css' %}">
     <link rel="stylesheet" href="{% static 'css/makeCheckList.css' %}?ver=1">
-    <script src="{% static 'js/checkList.js' %}"></script>
+    <script src="{% static 'js/checkList.js' %}?ver=1"></script>
 {% endblock %}
 
 {%block presentation%}
@@ -20,7 +20,7 @@
             {% csrf_token %}
             {% for checkListItem in checkListItems%}
                 {% if checkListItem.isChecked %}
-                {{checkListItem.itemName}}<br>
+                <input class="form-check-input checkList-item" type="checkbox" name="{{checkListItem.itemName}}" checked disabled> {{checkListItem.itemName}}</input><br>
                 {% else %}
                 <input class="form-check-input checkList-item" type="checkbox" name="{{checkListItem.itemName}}"> {{checkListItem.itemName}}</input><br>
                 {% endif %}

@@ -20,11 +20,11 @@
                 </div>
                 {%for checkList in checkLists%}
                     <div>
-                        <input class="form-check-input checkList-item" type="checkbox" name="{{checkList.checkListName}}"> {{checkList.checkListName}}</input>
+                        <input class="form-check-input checkList-item" type="checkbox" name="{{checkList.checkListName}}" onclick="check()"> {{checkList.checkListName}}</input>
                     </div>
                 {% endfor %}
                 <div class="row side-menu btn btn-default" onclick="submit()">
-                    그래프 만들기
+                    적용
                 </div>
             </div>
         </div>
@@ -34,7 +34,7 @@
             <div class="container">
                 <canvas id="myChart"></canvas>
             </div>
-        <script src="{% static 'js/graph.js' %}?ver=36"></script>
+        <script src="{% static 'js/graph.js' %}?ver=38"></script>
         </div>
     </div>
 {% endblock content %}

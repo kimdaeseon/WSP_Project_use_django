@@ -34,8 +34,9 @@ const submit = function(){
         itemList : []
     }
     checkList = document.getElementsByClassName('checkList-item')
+    
     for(let i = 0; i < checkList.length; i++){
-        if(checkList[i].checked){
+        if(checkList[i].checked && !checkList[i].disabled){
             data.itemList.push(checkList[i].name)
         }
     }

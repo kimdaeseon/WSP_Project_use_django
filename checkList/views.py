@@ -51,12 +51,39 @@ def check_login(request):
             'loginstatus' : 'true'
         }, json_dumps_params = {'ensure_ascii' : True})
 
-def check_list(request, checkListName):
+def calcDiffer(differ):
     year = datetime.today().year
     month = datetime.today().month
     day = datetime.today().day
+    monthData = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    targetYear = -1
+    targetMonth = -1
+    targetDay = -1
+
+    if day - differ < 1 :
+        if month - 1 < 1:
+            targetYear = year-1
+            targetMonth = 12
+            targetDay = monthData[month-1] + (day - differ)
+        else:
+            targetYear = year
+            targetMonth = month - 1
+            targetDay = monthData[month-1] + (day - differ)
+    else:
+        targetYear = year
+        targetMonth = month 
+        targetDay = day - differ
+    
+    return targetYear, targetMonth, targetDay
+
+def check_list(request, checkListName):
+
+    year = datetime.today().year
+    month = datetime.today().month
+    day = datetime.today().day
+    
     checkListItems = CheckListItems.objects.filter(checkListName = checkListName, userName = request.session['userName'])
-    savedItems = CheckListData.objects.filter(dateData__year = year, dateData__month = month, dateData__day = day)
+    savedItems = CheckListData.objects.filter(userName = request.session['userName'], checkListName = checkListName, dateData__gt = timezone.datetime(year, month, day), dateData__lte = timezone.datetime.now())
     for i in checkListItems:
         i.isChecked = False
         for j in savedItems:
@@ -105,31 +132,6 @@ def delete_check_list(request):
             'status' : 'true'
         }, json_dumps_params = {'ensure_ascii' : True})
 
-
-def calcDiffer(differ):
-    year = datetime.today().year
-    month = datetime.today().month
-    day = datetime.today().day
-    monthData = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-    targetYear = -1
-    targetMonth = -1
-    targetDay = -1
-
-    if day - differ < 1 :
-        if month - 1 < 1:
-            targetYear = year-1
-            targetMonth = 12
-            targetDay = monthData[month-1] + (day - differ)
-        else:
-            targetYear = year
-            targetMonth = month - 1
-            targetDay = monthData[month-1] + (day - differ)
-    else:
-        targetYear = year
-        targetMonth = month 
-        targetDay = day - differ
-    
-    return targetYear, targetMonth, targetDay
 
 
 

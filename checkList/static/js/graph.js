@@ -1,7 +1,4 @@
-
 let itemData = []
-
-
 
 const makeGraph = function(ctx, chartData){
     const myChart = new Chart(ctx, chartData)
@@ -186,7 +183,32 @@ const submit = function(){
         })
 }
 
+const check = function(){
+    let count = 0
+    checkList = document.getElementsByClassName('checkList-item')
+    
+    for(let i = 0; i < checkList.length; i++){
+        if(checkList[i].checked){
+            count = count + 1
+        }
+    }
 
+    if(count >2){
+        for(let i = 0; i < checkList.length; i++){
+            if(!checkList[i].checked){
+                checkList[i].disabled = true
+            }
+        }
+    }
+    else{
+        for(let i = 0; i < checkList.length; i++){
+            if(!checkList[i].checked){
+                checkList[i].disabled = false
+            }
+        }
+    }
+
+}
 
 $('#lineG').on('click', function(){
     myChart = lineChart(myChart, chartData, ctx)
