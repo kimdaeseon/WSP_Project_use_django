@@ -1,6 +1,4 @@
 
-const ctx = document.getElementById('myChart')
-
 let itemData = []
 
 
@@ -62,7 +60,7 @@ const chartData = {
                         if(i.name == checkListName){
                             for(j of i.items){
                                 if(j.date == itemDate){
-                                    string = `${checkListName} 체크한 항목 : ${j.items.toString()} (${itemDate})`
+                                    string = `${checkListName} 체크한 항목 :${j.items.toString()} (${itemDate})`
                                 }
                             }
                         }
@@ -75,7 +73,7 @@ const chartData = {
     } 
 }
 
-let myChart = makeGraph(ctx, chartData)
+
 
 const saveItemData = function(data){
     itemData = []
@@ -218,3 +216,31 @@ $('#lineG').on('click', function(){
 $('#barG').on('click', function(){
     myChart = barChart(myChart, chartData, ctx)
 })
+
+const checkList = document.getElementsByClassName('checkList-item')
+const ctx = document.getElementById('myChart')
+let myChart
+if(checkList.length != 0){
+    const firstData = {
+        checkListName : []
+    }
+    firstData.checkListName.push(checkList[0].name)
+    myChart = makeGraph(ctx, chartData)
+    $.ajax({
+        type: 'POST',
+        url: '/api/v1/graph',
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(firstData)
+    }).done(function(arg){
+        if(arg.status == 'true'){
+            myChart = changeData(chartData, arg.newData, myChart)
+            saveItemData(arg.newData)
+        }
+        else alert("아마도 실패?")
+    }).fail(function (error) {
+        alert(JSON.stringify(error))
+    })
+}
+
+
