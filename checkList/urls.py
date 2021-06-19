@@ -13,5 +13,6 @@ urlpatterns = [
     path('api/v1/saveCheckList', views.save_check_list, name='save_check_list'),
     path('api/v1/deleteCheckList', views.delete_check_list, name='delete_check_list'),
     path('api/v1/graph', views.graph_data, name='graph_data'),
-    path('test', views.test, name='test'),
+    path('register', views.registerPage, name='register_page'),
+    path('api/v1/register', views.register, name='register'),
 ]

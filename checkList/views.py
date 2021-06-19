@@ -11,10 +11,12 @@ from django.utils import timezone
 def login(request):
     return render(request, 'checkList/login.html', {})
 def graph(request):
-    checkList = CheckList.objects.filter(userName = request.session['userName'])
+    user = User.objects.get(name = request.session['userName'], userId =  request.session['userId'])
+    checkList = CheckList.objects.filter(user=user)
     return render(request, 'checkList/graph.html', {'checkLists' : checkList})
 def index(request):
-    checkList = CheckList.objects.filter(userName = request.session['userName'])
+    user = User.objects.get(name = request.session['userName'], userId =  request.session['userId'])
+    checkList = CheckList.objects.filter(user=user)
     return render(request, 'checkList/index.html', {'checkLists' : checkList})
 def make_check_list_page(request):
     return render(request, 'checkList/makeCheckList.html', {})
@@ -22,33 +24,43 @@ def make_check_list_page(request):
 def make_check_list(request):
     data = json.loads(request.body)
     items = data['data']
-    print(data['title'], data['data'])
+    user = User.objects.get(name = request.session['userName'], userId =  request.session['userId'])
+    try:
+        CheckList.objects.create(user = user, checkListName = data['title'])
+        checkList = CheckList.objects.get(user = user, checkListName = data['title'])
+        for i in items:
+            CheckListItems.objects.create(checkList = checkList, itemName = i)
 
-    CheckList.objects.create(userName = request.session['userName'], checkListName = data['title'])
+        return JsonResponse({
+            'status' : 'true'
+        }, json_dumps_params= {'ensure_ascii' : True})
+    except:
+        try:
+            checkList = CheckList.objects.get(user = user, checkListName = data['title'])
+            checkList.delete()
+            return JsonResponse({
+                'status' : 'false'
+            }, json_dumps_params= {'ensure_ascii' : True})
+        except:
+            return JsonResponse({
+                'status' : 'false'
+            }, json_dumps_params= {'ensure_ascii' : True})
 
-    for i in items:
-        CheckListItems.objects.create(userName = request.session['userName'], checkListName = data['title'], itemName = i)
-
-    return JsonResponse({
-        'status' : 'success'
-    }, json_dumps_params= {'ensure_ascii' : True})
 
 def check_login(request):
     data = json.loads(request.body)
     userId = data['userId']
     userPassword = data['userPassword']
-    isUser = User.objects.filter(userId = userId, userPassword = userPassword)
-    print(isUser)
-    if not isUser:
-        print("login failed")
-        return JsonResponse({
-            'loginstatus' : 'false'
-        }, json_dumps_params = {'ensure_ascii' : True})
-    else:
-        print(isUser[0].name)
-        request.session['userName'] = isUser[0].name
+    try:
+        user = User.objects.get(userId = userId, userPassword = userPassword)
+        request.session['userName'] = user.name
+        request.session['userId'] = user.userId
         return JsonResponse({
             'loginstatus' : 'true'
+        }, json_dumps_params = {'ensure_ascii' : True})
+    except:
+        return JsonResponse({
+            'loginstatus' : 'false'
         }, json_dumps_params = {'ensure_ascii' : True})
 
 def calcDiffer(differ):
@@ -81,52 +93,50 @@ def check_list(request, checkListName):
     year = datetime.today().year
     month = datetime.today().month
     day = datetime.today().day
-    
-    checkListItems = CheckListItems.objects.filter(checkListName = checkListName, userName = request.session['userName'])
-    savedItems = CheckListData.objects.filter(userName = request.session['userName'], checkListName = checkListName, dateData__gt = timezone.datetime(year, month, day), dateData__lte = timezone.datetime.now())
-    for i in checkListItems:
+
+    temp = []
+    savedItems = []
+
+    user = User.objects.get(name = request.session['userName'], userId =  request.session['userId'])
+    checkList = CheckList.objects.get(user = user, checkListName = checkListName)
+    checkListItem = CheckListItems.objects.filter(checkList = checkList)
+    for i in checkListItem:
+        temp = CheckListData.objects.filter(checkListItem = i, dateData__gt = timezone.datetime(year, month, day), dateData__lte = timezone.datetime.now())
+        for j in temp:
+            savedItems.append(j)
+    for i in checkListItem:
         i.isChecked = False
         for j in savedItems:
-            print(i.itemName, j.itemName)
-            if i.itemName == j.itemName:
+            if i.itemName == j.checkListItem.itemName:
                 i.isChecked = True
 
-    return render(request, 'checkList/checkList.html', {'checkListItems' : checkListItems, 'checkListName' : checkListName})
+    return render(request, 'checkList/checkList.html', {'checkListItems' : checkListItem, 'checkListName' : checkListName})
 
 def save_check_list(request):
     data = json.loads(request.body)
     checkListName = data['checkListName']
     items = data['itemList']
-    print(items)
+    user = User.objects.get(name = request.session['userName'], userId = request.session['userId'])
+    checkList = CheckList.objects.get(user=user, checkListName = checkListName)
     for item in items:
-        print(items)
-        CheckListData.objects.create(userName = request.session['userName'], checkListName = checkListName, itemName = item)
+        checkListItem = CheckListItems.objects.get(checkList=checkList, itemName = item)
+        CheckListData.objects.create(checkListItem = checkListItem, dateData = timezone.datetime.now())
     
     return JsonResponse({
             'status' : 'true'
         }, json_dumps_params = {'ensure_ascii' : True})
     
 def delete_check_list_page(request):
-    checkList = CheckList.objects.filter(userName = request.session['userName'])
+    user = User.objects.get(name = request.session['userName'], userId = request.session['userId'])
+    checkList = CheckList.objects.filter(user = user)
     return render(request, 'checkList/index.html', {'deleteMode' : True, 'checkLists' : checkList})
     
 def delete_check_list(request):
     data = json.loads(request.body)
     checkListName = data['checkListName']
-    print(checkListName)
+    user = User.objects.get(name = request.session['userName'], userId = request.session['userId'])
     for name in checkListName:
-        print(name)
-        print( CheckList.objects.filter(userName = request.session['userName'], checkListName = name))
-        CheckList.objects.filter(userName = request.session['userName'], checkListName = name).delete()
-        print( CheckList.objects.filter(userName = request.session['userName'], checkListName = name))
-
-        print( CheckListItems.objects.filter(userName = request.session['userName'], checkListName = name))
-        CheckListItems.objects.filter(userName = request.session['userName'], checkListName = name).delete()
-        print( CheckListItems.objects.filter(userName = request.session['userName'], checkListName = name))
-
-        print( CheckListData.objects.filter(userName = request.session['userName'], checkListName = name))
-        CheckListData.objects.filter(userName = request.session['userName'], checkListName = name).delete()
-        print( CheckListData.objects.filter(userName = request.session['userName'], checkListName = name))
+        CheckList.objects.filter(user=user, checkListName = name).delete()
     
     return JsonResponse({
             'status' : 'true'
@@ -142,29 +152,29 @@ def graph_data(request):
     temp = []
     tempItemName = []
     count = 0
+    user = User.objects.get(name = request.session['userName'], userId = request.session['userId'])
     for name in checkListName:
+        checkList = CheckList.objects.get(user=user, checkListName = name)
         newData.append([])
         for i in range(0, 7):
             targetYear, targetMonth, targetDay = calcDiffer(i)
             targetPrevYear, targetPrevMonth, targetPrevDay = calcDiffer(i - 1)
             if i == 0:
-                print(request.session['userName'], name)
-                array = CheckListData.objects.filter(userName = request.session['userName'], checkListName = name, dateData__gt = timezone.datetime(targetYear, targetMonth, targetDay), dateData__lte = timezone.now())
+                array = CheckListData.objects.filter(checkListItem__checkList = checkList, dateData__gt = timezone.datetime(targetYear, targetMonth, targetDay), dateData__lte = timezone.now())
                 for i in array:
-                    tempItemName.append(i.itemName)
+                    tempItemName.append(i.checkListItem.itemName)
                 temp.append({
                     "date" : str(targetYear) + "." + str(targetMonth) + "." + str(targetDay) + ".",
-                    "value" : len(CheckListData.objects.filter(userName = request.session['userName'], checkListName = name, dateData__gt = timezone.datetime(targetYear, targetMonth, targetDay), dateData__lte = timezone.now())),
+                    "value" : len(array),
                     'items' : tempItemName[:]
                 }) 
             else:
-                print(request.session['userName'], name)
-                array = CheckListData.objects.filter(userName = request.session['userName'], checkListName = name, dateData__gt = timezone.datetime(targetYear, targetMonth, targetDay), dateData__lte = timezone.datetime(targetPrevYear, targetPrevMonth, targetPrevDay))
+                array = CheckListData.objects.filter(checkListItem__checkList = checkList, dateData__gt = timezone.datetime(targetYear, targetMonth, targetDay), dateData__lte = timezone.datetime(targetPrevYear, targetPrevMonth, targetPrevDay))
                 for i in array:
-                    tempItemName.append(i.itemName)
+                    tempItemName.append(i.checkListItem.itemName)
                 temp.append({
                     "date" : str(targetYear) + "." + str(targetMonth) + "." + str(targetDay) + ".",
-                    "value" : len(CheckListData.objects.filter(userName = request.session['userName'], checkListName = name, dateData__gt = timezone.datetime(targetYear, targetMonth, targetDay), dateData__lte = timezone.datetime(targetPrevYear, targetPrevMonth, targetPrevDay))),
+                    "value" : len(array),
                     'items' : tempItemName[:]
                 }) 
             tempItemName = []
@@ -175,17 +185,26 @@ def graph_data(request):
         count = count + 1
         temp = []
         
-    print(newData)
     return JsonResponse({
             'status' : 'true',
             'newData' : newData
         }, json_dumps_params = {'ensure_ascii' : True})
 
-def test(request):
+def registerPage(request):
+    return render(request, 'checkList/register.html', {})
 
-
-    CheckListData.objects.create(userName = "daeseon", checkListName = "test", itemName = "testItem", dateData = timezone.datetime(2021, 6, 17))
-
-    return JsonResponse({
-            'status' : 'false'
+def register(request):
+    data = json.loads(request.body)
+    userId = data['userId']
+    userPassword = data['userPassword']
+    name = data['userName']
+    try:
+        User.objects.create(name = name, userId = userId, userPassword= userPassword)
+        return JsonResponse({
+            'status' : 'true',
         }, json_dumps_params = {'ensure_ascii' : True})
+    except:
+        return JsonResponse({
+            'status' : 'false',
+        }, json_dumps_params = {'ensure_ascii' : True})
+

@@ -3,7 +3,7 @@
 
 {% block static %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
-    <link rel="stylesheet" href="{% static 'css/checkList.css' %}?ver=2">
+    <link rel="stylesheet" href="{% static 'css/checkList.css' %}">
 {% endblock static %}
 
 {% block presentation %}
@@ -34,7 +34,7 @@
             <div class="container">
                 <canvas id="myChart"></canvas>
             </div>
-        <script src="{% static 'js/graph.js' %}?ver=38"></script>
+        <script src="{% static 'js/graph.js' %}"></script>
         </div>
     </div>
 {% endblock content %}

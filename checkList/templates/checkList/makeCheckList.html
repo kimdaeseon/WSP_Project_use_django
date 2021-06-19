@@ -17,12 +17,14 @@
     <div class=make-box>
         항목 개수 : <div id ="numberOfItem" style="display:inline-block;">0</div><br><br>
         체크리스트 이름 : <input type="text" name="checkListName" id="checkListName">
-        <div id="itemList">
         {% csrf_token %}
+        <div id="itemList">
+        
         </div>
             <br><br>
             <div class="btn btn-primary" id="makeList" onclick="submit()">체크리스트 생성</div>
             <div class="btn btn-primary" id="addItem" onclick="addItem()">목록 추가</div>
+            <div class="btn btn-primary" id="deleteItem" onclick="deleteItem()">목록 지우기</div>
         
     </div>
 {% endblock content %}

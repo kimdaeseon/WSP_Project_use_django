@@ -36,6 +36,25 @@ const addItem = function(){
     document.getElementById('numberOfItem').innerHTML = parseInt(numberOfItem) + 1
 }
 
+const deleteItem = function(){
+    let string = document.getElementById('itemList').innerHTML
+    const numberOfItem = document.getElementById('numberOfItem').innerHTML
+    if(numberOfItem >= 1){
+        const splitString = string.split('<br><br>')
+        splitString.pop()
+        console.log(splitString)
+        const replaceString = splitString.map( element => element.replace("<br>", ""));
+        console.log(replaceString)
+        string = ""
+        for(let i = 0; i < replaceString.length; i++){
+            string = string + '<br>' + replaceString[i] + '<br>'
+        }
+        document.getElementById('itemList').innerHTML = string
+        document.getElementById('numberOfItem').innerHTML = parseInt(numberOfItem) - 1
+    }
+    else return 
+}
+
 const submit = function(){
     numberOfItem = parseInt(document.getElementById('numberOfItem').innerHTML)
     const temp = []
@@ -53,8 +72,8 @@ const submit = function(){
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(data)
         }).done(function(arg){
-            if(arg.status == 'success') window.location.href = '/index'
-            else alert("아마도 실패?")
+            if(arg.status == 'true') window.location.href = '/index'
+            else alert("체크리스트 생성에 실패하였습니다.")
         }).fail(function (error) {
             alert(JSON.stringify(error))
         })
