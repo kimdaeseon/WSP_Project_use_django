@@ -51,6 +51,7 @@ def check_login(request):
     data = json.loads(request.body)
     userId = data['userId']
     userPassword = data['userPassword']
+    print(data, userId, userPassword)
     try:
         user = User.objects.get(userId = userId, userPassword = userPassword)
         request.session['userName'] = user.name

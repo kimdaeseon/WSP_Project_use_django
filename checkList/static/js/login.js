@@ -28,10 +28,10 @@ $.ajaxSetup({
     }
 });
 
-
 const login = {
     init : function(){
         const _this = this;
+        _this.keydown()
         $('#login').on('click', function(){
             _this.login()
         })
@@ -53,11 +53,21 @@ const login = {
                 window.location.href = '/index'
             }
             else if (arg.loginstatus == 'false'){
+                console.log(arg)
                 alert("로그인에 실패하였습니다.")
                 window.location.href = '/'
             }           
         }).fail(function (error) {
             alert(JSON.stringify(error))
+        })
+    },
+    keydown : function(){
+        const _this = this
+        document.addEventListener('keydown', function(e){
+            const keyCode = e.keyCode;
+            if(keyCode == 13){ // Enter key
+                _this.login()
+            }
         })
     }
 }

@@ -19,7 +19,7 @@
             </div>
             <div class="row side-menu">
                 {% if deleteMode %}
-                    <a class="btn btn-default delete-button" role="button" onclick="submit()">체크리스트 삭제하기</a>
+                    <a class="btn btn-danger delete-button" role="button" onclick="submit()">선택한 체크리스트 삭제</a>
                 {% else %}
                     <a href="/deleteCheckList" class="btn btn-default" role="button">체크리스트 삭제하기</a>
                 {% endif %}
@@ -29,15 +29,15 @@
             <table class="table checkList">
                 {% if deleteMode %}
                     <thead>
-                        <th>삭제 여부</th>
+                        <th style="width : 100px">삭제 여부</th>
                         <th>체크리스트 목록</th>
                     </thead>
                     <tbody>
                         {% csrf_token %}
                         {% for checkList in checkLists%}
-                        <tr style="text-align: left;">
-                            <td><input class="form-check-input checkList-item" style="margin-left:30%; "type="checkbox" name="{{checkList.checkListName}}"> {{checkList.checkListName}}</input></td>
-                            <td><a href="/checkList/{{checkList.checkListName}}" style="margin-left:30%; ">{{checkList.checkListName}}</a></td>
+                        <tr style="text-align: center;">
+                            <td><input class="form-check-input checkList-item" type="checkbox" name="{{checkList.checkListName}}"></input></td>
+                            <td><a href="/checkList/{{checkList.checkListName}}">{{checkList.checkListName}}</a></td>
                         </tr>
                         {% endfor %}
                     </tbody>
